@@ -20,7 +20,7 @@ jobs:
           echo ${{ inputs.runlist }}
       - name: test
         run: |
-          if [ "${{ inputs.runlist }}" -eq "" ]; then
+          if [ "${{ inputs.runlist }}" = "" ]; then
               echo “run all test”
           else
               echo ${{ inputs.runlist }} > ./runlist
