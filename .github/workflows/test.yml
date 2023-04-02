@@ -1,5 +1,8 @@
 on:
   workflow_dispatch:
+    inputs:
+      runlist:
+        type: string
 
 jobs:
   echo:
