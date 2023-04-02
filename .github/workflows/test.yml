@@ -17,4 +17,5 @@ jobs:
           echo '5' ${{ github.base_ref }}
       - name: input cheack
         run: |
-          echo ${{ inputs.runlist }}
+          echo ${{ inputs.runlist }} > ./runlist
+          cat ./runlist
