@@ -23,7 +23,7 @@ jobs:
 
   # Android実行
   DMMTV_APP_ANDROID_BS_STG_BASIC_PURCHASE:
-    if: always() && (needs.GET_DATE.outputs.day-of-week == 'Monday' or needs.GET_DATE.outputs.day-of-week == 'Wednesday' or needs.GET_DATE.outputs.day-of-week == 'Friday' or needs.GET_DATE.outputs.day-of-week == 'Sunday')
+    if: always() && (needs.GET_DATE.outputs.day-of-week == 'Monday' || needs.GET_DATE.outputs.day-of-week == 'Wednesday' || needs.GET_DATE.outputs.day-of-week == 'Friday' || needs.GET_DATE.outputs.day-of-week == 'Sunday')
     needs: GET_DATE
     runs-on: ubuntu-latest
     steps: 
@@ -33,7 +33,7 @@ jobs:
 
   # iOSの実行
   DMMTV_APP_IOS_BS_STG_BASIC_PURCHASE:
-    if: always() && (needs.GET_DATE.outputs.day-of-week == 'Tuesday' or needs.GET_DATE.outputs.day-of-week == 'Thursday' or needs.GET_DATE.outputs.day-of-week == 'Saturday')
+    if: always() && (needs.GET_DATE.outputs.day-of-week == 'Tuesday' || needs.GET_DATE.outputs.day-of-week == 'Thursday' || needs.GET_DATE.outputs.day-of-week == 'Saturday')
     needs: [DMMTV_APP_ANDROID_BS_STG_BASIC_PURCHASE,GET_DATE]
     runs-on: ubuntu-latest
     steps: 
