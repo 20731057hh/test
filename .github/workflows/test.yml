@@ -1,28 +1,42 @@
 on:
+  schedule:
+    #月-金曜日 0:00 (JST) に処理を実行する。
+    - cron: '00 15 * * 0-4'
+    #土曜日,日曜日 2:00 (JST) に処理を実行する。
+    - cron: '00 17 * * 5,6'
+    #土曜日,日曜日 2:00 (JST) に処理を実行する。
+    - cron: '00 19 * * 5,6'
   workflow_dispatch:
-    inputs:
-      runlist:
-        type: string
 
 jobs:
-  echo:
+  # TODO: 暫定対応、アカウントが追加されたら削除する
+  #       下記を参考に曜日の日替わりでAndoridとiOSの実行を切り替える処理を追加
+  #       https://gkzz.dev/posts/github-actions-schedule-cron-expression/
+  GET_DATE:
+    name: Run date command
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo "::set-output name=today::$(LANG=C date '+%A')"
+        id: day-of-week
+    outputs:
+      day-of-week: ${{ steps.day-of-week.outputs.today }}
+
+  # Android実行
+  DMMTV_APP_ANDROID_BS_STG_BASIC_PURCHASE:
+    if: always() && (needs.GET_DATE.outputs.day-of-week == 'Monday' or needs.GET_DATE.outputs.day-of-week == 'Wednesday' or needs.GET_DATE.outputs.day-of-week == 'Friday' or needs.GET_DATE.outputs.day-of-week == 'Sunday')
+    needs: GET_DATE
     runs-on: ubuntu-latest
     steps: 
-      - name: github cheack
+      - name: DMMTV_APP_ANDROID_BS_STG_BASIC_PURCHASE
         run: |
-          echo '1' $GITHUB_REF
-          echo '2' ${{ github.ref }}
-          echo '3' ${{ github.ref_name }}
-          echo '4' ${{ github.head_ref }}
-          echo '5' ${{ github.base_ref }}
-      - name: input cheack
+          echo 'DMMTV_APP_ANDROID_BS_STG_BASIC_PURCHASE'
+
+  # iOSの実行
+  DMMTV_APP_IOS_BS_STG_BASIC_PURCHASE:
+    if: always() && (needs.GET_DATE.outputs.day-of-week == 'Tuesday' or needs.GET_DATE.outputs.day-of-week == 'Thursday' or needs.GET_DATE.outputs.day-of-week == 'Saturday')
+    needs: [DMMTV_APP_ANDROID_BS_STG_BASIC_PURCHASE,GET_DATE]
+    runs-on: ubuntu-latest
+    steps: 
+      - name: DMMTV_APP_IOS_BS_STG_BASIC_PURCHASE
         run: |
-          echo ${{ inputs.runlist }}
-      - name: test
-        run: |
-          if [ "${{ inputs.runlist }}" = "" ]; then
-              echo “run all test”
-          else
-              echo ${{ inputs.runlist }} > ./runlist
-              cat ./runlist
-          fi
+          echo 'DMMTV_APP_IOS_BS_STG_BASIC_PURCHASE'
